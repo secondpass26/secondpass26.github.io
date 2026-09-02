@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { categoryPath, postPath } from '../lib/posts';
+
+interface Props { posts: CollectionEntry<'posts'>[] }
+const { posts } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const withBase = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+---
+
+<ol class="post-list">
+  {posts.map((post) => (
+    <li>
+      <article>
+        <div class="post-meta">
+          <a class="category" href={withBase(categoryPath(post.data.category))}>{post.data.category}</a>
+          <span aria-hidden="true">·</span>
+          <time datetime={post.data.published.toISOString()}>{post.data.published.toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })}</time>
+        </div>
+        <h2><a href={withBase(postPath(post.id))}>{post.data.title}</a></h2>
+        <p class="post-description">{post.data.description}</p>
+      </article>
+    </li>
+  ))}
+</ol>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { categoryPath, getPublishedPosts } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const categories = ['Brain & Focus', 'Development', 'Life'];
+  return categories.map((category) => ({
+    params: { category: categoryPath(category).split('/').filter(Boolean).at(-1) },
+    props: { category, posts: posts.filter((post) => post.data.category === category) },
+  }));
+}
+
+const { category, posts } = Astro.props;
+---
+
+<BaseLayout title={category} description={`Notes filed under ${category}.`}>
+  <section class="page-heading">
+    <p class="eyebrow">Category</p>
+    <h1>{category}</h1>
+  </section>
+  {posts.length > 0 ? <PostList posts={posts} /> : <p class="empty-state">No notes here yet.</p>}
+</BaseLayout>

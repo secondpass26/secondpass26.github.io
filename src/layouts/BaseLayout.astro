@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Second Pass',
+  description = 'Notes on focus, software, and figuring things out.',
+} = Astro.props;
+const pageTitle = title === 'Second Pass' ? title : `${title} — Second Pass`;
+const base = import.meta.env.BASE_URL;
+const withBase = (path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href={`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><circle cx=%2210%22 cy=%2210%22 r=%224%22 fill=%22%232563a9%22/></svg>`} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      const saved = localStorage.getItem('theme');
+      const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = saved || preferred;
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-name" href={withBase('/')}><span class="site-mark" aria-hidden="true"></span>Second Pass</a>
+      <nav aria-label="Primary navigation">
+        <a href={withBase('/categories/')}>Categories</a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+          <span aria-hidden="true">◑</span>
+        </button>
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer>
+      <p>Second Pass · No byline, tracking, or comments.</p>
+    </footer>
+    <script is:inline>
+      document.querySelector('.theme-toggle')?.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('theme', next);
+      });
+    </script>
+  </body>
+</html>
