@@ -30,7 +30,7 @@ pnpm dev
 
 ## GitHub Pages setup
 
-Create a GitHub repository, push this project, then choose **Settings → Pages → Source → GitHub Actions**. The workflow handles the repository subpath automatically. For a user or organization site named `<account>.github.io`, set the workflow's `BASE_PATH` to `/`.
+Create the GitHub repository as `secondpass26.github.io`, push this project, then choose **Settings → Pages → Source → GitHub Actions**. The site will publish at `https://secondpass26.github.io/`.
 
 Before making commits, verify the repository-local pseudonymous identity with:
 
