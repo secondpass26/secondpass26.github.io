@@ -9,8 +9,9 @@ const posts = await getPublishedPosts();
 <BaseLayout>
   <section class="intro">
     <h1>Second Pass</h1>
-    <p>Notes on focus, software, and figuring things out.</p>
+    <p class="intro-subtitle"><span class="pass-mark" aria-hidden="true"><span></span><span></span></span><span>Notes on focus, software, and figuring things out.</span></p>
     <nav class="category-nav" aria-label="Post categories">
+      <span>Browse</span>
       <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/categories/brain-and-focus/`}>Brain &amp; Focus</a>
       <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/categories/development/`}>Development</a>
       <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/categories/life/`}>Life</a>

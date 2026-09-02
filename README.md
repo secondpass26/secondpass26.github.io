@@ -11,13 +11,16 @@ Create a Markdown file in `src/content/posts/`:
 title: Your title
 description: A one-sentence summary.
 published: 2026-09-01
+category: Development
 tags:
-  - notes
+  - learning
 draft: false
 ---
 
 Your post starts here.
 ```
+
+Categories are intentionally limited to `Brain & Focus`, `Development`, and `Life`. Tags are flexible and reusable. Prefer consistent topic tags such as `focus`, `brain-fog`, `development`, `cpp`, `learning`, `career`, `exercise`, `projects`, and `life` when they fit; new tags are also allowed.
 
 Commit and push to `main`; the included workflow builds and publishes it.
 
