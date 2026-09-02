@@ -27,7 +27,19 @@ nav a { color: var(--muted); text-decoration: none; }
 nav a:hover, nav a:focus-visible, nav a[aria-current='page'] { color: var(--accent); }
 .theme-toggle { display: grid; place-items: center; width: 2rem; height: 2rem; border: 0; padding: 0; color: var(--muted); background: transparent; font: inherit; font-size: 1rem; cursor: pointer; }
 .theme-toggle:hover { color: var(--accent); }
-main { min-height: calc(100vh - 10.5rem); }
+main { position: relative; min-height: calc(100vh - 10.5rem); }
+.page-tools { position: absolute; top: 1.15rem; left: 0; display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 1rem; }
+.back-nav { flex: 0 0 auto; }
+.back-nav a { color: var(--muted); font-size: .78rem; text-decoration: none; }
+.back-nav a:hover { color: var(--accent); }
+.breadcrumb { min-width: 0; }
+.breadcrumb ol { display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.breadcrumb li { display: flex; min-width: 0; align-items: center; gap: .4rem; color: var(--muted); font-size: .72rem; white-space: nowrap; }
+.breadcrumb li:last-child { overflow: hidden; }
+.breadcrumb li:last-child span { overflow: hidden; text-overflow: ellipsis; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb-separator { opacity: .55; }
 .intro { padding: 3.8rem 0 2.85rem; }
 .intro-subtitle { display: flex; align-items: center; gap: .7rem; }
 .pass-mark { position: relative; display: inline-block; width: 1.6rem; height: 1rem; flex: 0 0 auto; }
