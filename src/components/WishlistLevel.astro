@@ -14,11 +14,16 @@ interface Props {
 
 const { number, title, subtitle, items, position } = Astro.props;
 const unlockedCount = items.filter((item) => item.completed).length;
+const rarity = ['Common', 'Rare', 'Legendary'][position - 1] ?? 'Reward';
 ---
 
 <section class:list={['wish-level', `level-${position}`]} aria-labelledby={`level-${number}`}>
   <header class="level-heading">
     <div class="level-copy">
+      <div class="level-meta">
+        <span>Level {number}</span>
+        <span class="rarity">{rarity}</span>
+      </div>
       <div class="level-title-row">
         <h2 id={`level-${number}`}>{title}</h2>
         <span class="level-count">{unlockedCount}/{items.length} unlocked</span>
@@ -30,9 +35,11 @@ const unlockedCount = items.filter((item) => item.completed).length;
   <ol class="wish-list">
     {items.map((item, index) => (
       <li class="wish-item" data-completed={item.completed || undefined}>
+        <span class="wish-cursor" aria-hidden="true">▶</span>
         <span class="wish-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
         <span class="wish-name">{item.name}</span>
         <span class:list={['reward-status', { unlocked: item.completed }]}>
+          {item.completed && <span aria-hidden="true">★</span>}
           {item.completed ? 'Unlocked' : 'Locked'}
         </span>
       </li>
@@ -57,11 +64,38 @@ const unlockedCount = items.filter((item) => item.completed).length;
     padding: 1rem 1.15rem;
   }
 
-  .level-title-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+  .level-meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 1rem;
+    width: 100%;
+    margin-bottom: .35rem;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .6rem;
+    font-weight: 650;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .rarity {
+    color: var(--accent);
+  }
+
+  .level-2 .rarity {
+    color: var(--highlight);
+  }
+
+  .level-3 .rarity {
+    color: var(--text);
+  }
+
+  .level-title-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 1rem;
+    width: 100%;
   }
 
   h2 {
@@ -96,14 +130,23 @@ const unlockedCount = items.filter((item) => item.completed).length;
 
   .wish-item {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    grid-template-areas: 'cursor number name status';
+    grid-template-columns: .65rem 2rem minmax(0, 1fr) auto;
     align-items: center;
-    gap: .75rem;
-    min-height: 2.75rem;
-    padding: .45rem .6rem;
+    gap: .7rem;
+    min-height: 3rem;
+    padding: .45rem .55rem;
+  }
+
+  .wish-cursor {
+    grid-area: cursor;
+    color: var(--accent);
+    font-size: .55rem;
+    opacity: .18;
   }
 
   .wish-number {
+    grid-area: number;
     color: var(--muted);
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: .66rem;
@@ -112,11 +155,16 @@ const unlockedCount = items.filter((item) => item.completed).length;
   }
 
   .wish-name {
+    grid-area: name;
+    width: 100%;
     font-size: .94rem;
     line-height: 1.4;
+    text-align: left;
   }
 
   .reward-status {
+    grid-area: status;
+    justify-self: end;
     min-width: 5.5rem;
     padding: .18rem .4rem;
     border: 1px solid var(--line);
@@ -133,17 +181,12 @@ const unlockedCount = items.filter((item) => item.completed).length;
   .reward-status.unlocked {
     border-color: var(--highlight);
     color: var(--highlight);
+    box-shadow: 2px 2px 0 var(--line);
   }
 
   .wish-item[data-completed] .wish-name {
-    color: var(--muted);
-    text-decoration: line-through;
-    text-decoration-color: var(--highlight);
-    text-decoration-thickness: 1px;
-  }
-
-  .wish-item[data-completed] .wish-name::after {
-    content: none;
+    color: var(--text);
+    font-weight: 600;
   }
 
   @media (hover: hover) {
@@ -154,6 +197,10 @@ const unlockedCount = items.filter((item) => item.completed).length;
     .wish-item:hover {
       color: var(--accent);
       background: var(--surface);
+    }
+
+    .wish-item:hover .wish-cursor {
+      opacity: 1;
     }
   }
 
@@ -168,25 +215,21 @@ const unlockedCount = items.filter((item) => item.completed).length;
       padding: .85rem;
     }
 
-    .level-title-row {
-      display: block;
-    }
-
-    .level-count {
-      display: block;
-      margin-top: .25rem;
-    }
-
     .wish-item {
-      grid-template-columns: 1.5rem minmax(0, 1fr);
+      grid-template-areas: 'cursor number name status';
+      grid-template-columns: .55rem 1.35rem minmax(0, 1fr) auto;
       gap: .4rem .6rem;
       padding: .55rem .35rem;
     }
 
     .reward-status {
-      grid-column: 2;
-      width: max-content;
-      min-width: 0;
+      min-width: 4.5rem;
+      padding-inline: .25rem;
+      font-size: .52rem;
+    }
+
+    .wish-cursor {
+      opacity: .45;
     }
   }
 </style>

@@ -28,7 +28,24 @@ const unlockedCount = wishlist_levels.reduce(
       <h1>{page.data.title}</h1>
       <p class="feature-title">{feature_title}</p>
       <p class="feature-intro">{feature_intro}</p>
-      <p class="save-status"><span>{unlockedCount}</span> / {rewardCount} rewards unlocked</p>
+      <div
+        class="reward-progress"
+        role="progressbar"
+        aria-label="Rewards unlocked"
+        aria-valuemin="0"
+        aria-valuemax={rewardCount}
+        aria-valuenow={unlockedCount}
+      >
+        <p>Rewards unlocked</p>
+        <div class="meter-row">
+          <div class="segments" style={`--reward-count: ${rewardCount}`} aria-hidden="true">
+            {Array.from({ length: rewardCount }, (_, index) => (
+              <span class:list={{ filled: index < unlockedCount }}></span>
+            ))}
+          </div>
+          <strong><span>{unlockedCount}</span> / {rewardCount}</strong>
+        </div>
+      </div>
     </header>
 
     <div class="level-sequence">
@@ -36,6 +53,11 @@ const unlockedCount = wishlist_levels.reduce(
         <WishlistLevel {...level} position={index + 1} />
       ))}
     </div>
+
+    <footer class="menu-footer">
+      <span>Reward menu // Second Pass</span>
+      <span>Keep going. More to unlock.</span>
+    </footer>
   </article>
 </BaseLayout>
 
@@ -97,22 +119,74 @@ const unlockedCount = wishlist_levels.reduce(
     text-align: left;
   }
 
-  .save-status {
+  .reward-progress {
     margin: 1.25rem 0 0;
+  }
+
+  .reward-progress p {
+    margin: 0 0 .4rem;
     color: var(--muted);
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: .66rem;
-    letter-spacing: .06em;
+    font-size: .58rem;
+    font-weight: 650;
+    letter-spacing: .1em;
     text-transform: uppercase;
   }
 
-  .save-status span {
+  .meter-row {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  .segments {
+    display: grid;
+    grid-template-columns: repeat(var(--reward-count, 8), minmax(.35rem, 1fr));
+    width: min(100%, 22rem);
+    gap: .22rem;
+  }
+
+  .segments span {
+    height: .55rem;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .segments span.filled {
+    border-color: var(--highlight);
+    background: var(--highlight);
+  }
+
+  .meter-row strong {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .66rem;
+    font-weight: 500;
+  }
+
+  .meter-row strong span {
     color: var(--highlight);
     font-weight: 700;
   }
 
   .level-sequence {
     position: relative;
+  }
+
+  .menu-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.75rem;
+    padding: .65rem 0;
+    border-top: 1px dashed var(--line);
+    border-bottom: 1px dashed var(--line);
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .58rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
   }
 
   @media (max-width: 36rem) {
@@ -126,6 +200,18 @@ const unlockedCount = wishlist_levels.reduce(
 
     .system-bar {
       margin-inline: -1rem;
+    }
+
+    .menu-footer {
+      display: block;
+    }
+
+    .menu-footer span {
+      display: block;
+    }
+
+    .menu-footer span + span {
+      margin-top: .3rem;
     }
   }
 </style>
