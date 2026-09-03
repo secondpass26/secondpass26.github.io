@@ -1,0 +1,192 @@
+---
+interface Wish {
+  name: string;
+  completed: boolean;
+}
+
+interface Props {
+  number: string;
+  title: string;
+  subtitle: string;
+  items: Wish[];
+  position: number;
+}
+
+const { number, title, subtitle, items, position } = Astro.props;
+const unlockedCount = items.filter((item) => item.completed).length;
+---
+
+<section class:list={['wish-level', `level-${position}`]} aria-labelledby={`level-${number}`}>
+  <header class="level-heading">
+    <div class="level-copy">
+      <div class="level-title-row">
+        <h2 id={`level-${number}`}>{title}</h2>
+        <span class="level-count">{unlockedCount}/{items.length} unlocked</span>
+      </div>
+      <p class="level-subtitle">{subtitle}</p>
+    </div>
+  </header>
+
+  <ol class="wish-list">
+    {items.map((item, index) => (
+      <li class="wish-item" data-completed={item.completed || undefined}>
+        <span class="wish-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <span class="wish-name">{item.name}</span>
+        <span class:list={['reward-status', { unlocked: item.completed }]}>
+          {item.completed ? 'Unlocked' : 'Locked'}
+        </span>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .wish-level {
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    box-shadow: 4px 4px 0 var(--line);
+  }
+
+  .level-heading {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .level-copy {
+    padding: 1rem 1.15rem;
+  }
+
+  .level-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.15rem;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+
+  .level-count {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .64rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .level-subtitle {
+    margin: .25rem 0 0;
+    color: var(--muted);
+    font-size: .83rem;
+    white-space: nowrap;
+  }
+
+  .wish-list {
+    margin: 0;
+    padding: .65rem;
+    list-style: none;
+  }
+
+  .wish-item {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .75rem;
+    min-height: 2.75rem;
+    padding: .45rem .6rem;
+  }
+
+  .wish-number {
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .66rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .06em;
+  }
+
+  .wish-name {
+    font-size: .94rem;
+    line-height: 1.4;
+  }
+
+  .reward-status {
+    min-width: 5.5rem;
+    padding: .18rem .4rem;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .58rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: .1em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .reward-status.unlocked {
+    border-color: var(--highlight);
+    color: var(--highlight);
+  }
+
+  .wish-item[data-completed] .wish-name {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--highlight);
+    text-decoration-thickness: 1px;
+  }
+
+  .wish-item[data-completed] .wish-name::after {
+    content: none;
+  }
+
+  @media (hover: hover) {
+    .wish-item {
+      transition: color 120ms steps(2, end), background-color 120ms steps(2, end);
+    }
+
+    .wish-item:hover {
+      color: var(--accent);
+      background: var(--surface);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wish-item {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .level-copy {
+      padding: .85rem;
+    }
+
+    .level-title-row {
+      display: block;
+    }
+
+    .level-count {
+      display: block;
+      margin-top: .25rem;
+    }
+
+    .wish-item {
+      grid-template-columns: 1.5rem minmax(0, 1fr);
+      gap: .4rem .6rem;
+      padding: .55rem .35rem;
+    }
+
+    .reward-status {
+      grid-column: 2;
+      width: max-content;
+      min-width: 0;
+    }
+  }
+</style>

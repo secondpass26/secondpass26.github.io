@@ -1,15 +1,98 @@
 ---
+import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+import StatusGoal from '../components/StatusGoal.astro';
+
+const page = await getEntry('pages', 'goals');
+if (!page) throw new Error('Missing content file: src/content/pages/goals.md');
+
+const { Content } = await render(page);
+const {
+  weight_start,
+  weight_current,
+  weight_target,
+  neetcode_current,
+  neetcode_target,
+  run_current,
+  run_target,
+  job_status,
+  project_status,
+  second_pass_status,
+  cpp_status,
+  hft_status,
+} = page.data;
+
+if (
+  weight_start === undefined || weight_current === undefined || weight_target === undefined ||
+  neetcode_current === undefined || neetcode_target === undefined ||
+  run_current === undefined || run_target === undefined
+) {
+  throw new Error('Goals frontmatter is missing one or more measurable progress values.');
+}
+
+const statusGoals = [
+  { goal: 'Next software role', status: job_status, description: 'Applications, interviews, and preparation.' },
+  { goal: 'Meaningful project', status: project_status, description: 'Ship one project that is genuinely useful.' },
+  { goal: 'Second Pass', status: second_pass_status, description: 'Write, build, and document the process consistently.' },
+  { goal: 'C++ / Systems Engineering', status: cpp_status, description: 'Build stronger foundations in modern C++, memory, concurrency, performance, and system design.' },
+  { goal: 'High-performance / HFT interviews', status: hft_status, description: 'Prepare across C++, DSA, operating systems, networking, CPU performance, and concurrency.' },
+].filter((goal): goal is { goal: string; status: string; description: string } => Boolean(goal.status));
 ---
 
-<BaseLayout title="Goals" description="A short list of what I am working toward.">
-  <article class="text-page">
+<BaseLayout title={page.data.title} description={page.data.description}>
+  <article class="goals-page">
     <header class="page-heading">
-      <p class="eyebrow">Working toward</p>
-      <h1>Goals</h1>
+      <p class="eyebrow">{page.data.eyebrow}</p>
+      <h1>{page.data.title}</h1>
     </header>
+
     <div class="page-copy">
-      <p>Build steadier focus, strengthen my development fundamentals, and finish small projects that turn learning into something tangible.</p>
+      <Content />
     </div>
+
+    <section class="progress-group" aria-labelledby="progress-heading">
+      <h2 class="section-title" id="progress-heading">Current progress</h2>
+      <ProgressBar goal="Weight" current={weight_current} target={weight_target} start={weight_start} unit="kg" targetPrefix="under" />
+      <ProgressBar goal="NeetCode 150" current={neetcode_current} target={neetcode_target} />
+      <ProgressBar goal="Running" current={run_current} target={run_target} unit="km" />
+    </section>
+
+    {statusGoals.length > 0 && (
+      <section class="progress-group" aria-labelledby="status-heading">
+        <h2 class="section-title" id="status-heading">Status goals</h2>
+        {statusGoals.map((goal) => <StatusGoal {...goal} />)}
+      </section>
+    )}
   </article>
 </BaseLayout>
+
+<style>
+  .goals-page {
+    max-width: var(--measure);
+    padding-bottom: 4.5rem;
+  }
+
+  .goals-page .page-heading {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-copy {
+    font-size: 1.02rem;
+    line-height: 1.78;
+  }
+
+  .page-copy :global(h2) {
+    margin: 2rem 0 .65rem;
+    font-size: 1.3rem;
+  }
+
+  .page-copy :global(ul) {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .progress-group {
+    margin-top: 3rem;
+  }
+</style>

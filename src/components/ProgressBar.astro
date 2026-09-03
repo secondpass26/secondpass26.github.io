@@ -1,0 +1,100 @@
+---
+interface Props {
+  goal: string;
+  current: number;
+  target: number;
+  start?: number;
+  unit?: string;
+  targetPrefix?: string;
+}
+
+const { goal, current, target, start, unit = '', targetPrefix = '' } = Astro.props;
+const rawProgress = start === undefined
+  ? (current / target) * 100
+  : ((start - current) / (start - target)) * 100;
+const progress = Number.isFinite(rawProgress)
+  ? Math.min(100, Math.max(0, rawProgress))
+  : 0;
+const percentage = Math.round(progress);
+const suffix = unit ? ` ${unit}` : '';
+const valueLabel = targetPrefix
+  ? `${current}${suffix} → ${targetPrefix} ${target}${suffix}`
+  : `${current}${suffix} / ${target}${suffix}`;
+---
+
+<section class="progress-item">
+  <div class="progress-heading">
+    <div>
+      <h2>{goal}</h2>
+      <p>{valueLabel}</p>
+    </div>
+    <strong>{percentage}%</strong>
+  </div>
+  <div
+    class="progress-track"
+    role="progressbar"
+    aria-label={goal}
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow={percentage}
+    aria-valuetext={`${valueLabel}, ${percentage}% complete`}
+  >
+    <span class="progress-fill" style={`width: ${progress}%`}></span>
+  </div>
+</section>
+
+<style>
+  .progress-item {
+    padding: 1.35rem 0 1.45rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .progress-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .75rem;
+  }
+
+  h2 {
+    margin: 0 0 .2rem;
+    font-size: 1.08rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .88rem;
+  }
+
+  strong {
+    color: var(--accent);
+    font-size: .88rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .progress-track {
+    height: .55rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface);
+  }
+
+  .progress-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+  }
+
+  @media (max-width: 36rem) {
+    .progress-item {
+      padding-block: 1.15rem 1.25rem;
+    }
+
+    .progress-heading {
+      align-items: flex-start;
+    }
+  }
+</style>

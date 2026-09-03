@@ -1,0 +1,65 @@
+---
+interface Props {
+  goal: string;
+  status: string;
+  description: string;
+}
+
+const { goal, status, description } = Astro.props;
+---
+
+<section class="status-item">
+  <div class="status-heading">
+    <h2>{goal}</h2>
+    <span>{status}</span>
+  </div>
+  <p>{description}</p>
+</section>
+
+<style>
+  .status-item {
+    padding: 1.35rem 0 1.45rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .status-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .35rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.08rem;
+  }
+
+  span {
+    flex: 0 0 auto;
+    padding: .15rem .55rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--accent);
+    background: var(--surface);
+    font-size: .74rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .88rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 36rem) {
+    .status-item {
+      padding-block: 1.15rem 1.25rem;
+    }
+
+    .status-heading {
+      align-items: flex-start;
+    }
+  }
+</style>

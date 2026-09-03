@@ -1,16 +1,9 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+import ContentPage from '../components/ContentPage.astro';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('Missing content file: src/content/pages/about.md');
 ---
 
-<BaseLayout title="About" description="About Second Pass, a pseudonymous notebook about focus, software, career changes, and ordinary life.">
-  <article class="text-page">
-    <header class="page-heading">
-      <p class="eyebrow">About this site</p>
-      <h1>About</h1>
-    </header>
-    <div class="page-copy">
-      <p>Second Pass is a pseudonymous notebook about rebuilding focus, learning software, career changes, and ordinary life.</p>
-      <p>I write here to understand things more clearly, document what I am learning, and keep a record of what changes over time.</p>
-    </div>
-  </article>
-</BaseLayout>
+<ContentPage {page} />

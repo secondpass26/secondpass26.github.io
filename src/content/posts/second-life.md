@@ -1,6 +1,6 @@
 ---
 title: Second life
-description: Starting over life again as a 39 years old. 
+description: Starting over again as a 39 years old. 
 published: 2026-09-02
 category: Life
 tags:
